@@ -1,0 +1,147 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: white;
+}
+
+
+body{
+    background-color: #1B1B1B;
+}
+
+.container{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid red;
+}
+
+.window{
+    border: 1px solid red;
+    height: 720px;
+    width:  480px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bgImg{
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url(./Assets/day_city.png);
+    background-position: bottom;
+    background-repeat: repeat-x;
+    background-size: cover;
+    animation-duration: 9.5s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-play-state: running;
+    animation-timing-function: linear;
+}
+
+.bgPauseAnim{
+    animation-play-state: paused;
+}
+
+.bg1{
+    left: 0;
+    animation-name: moveBackground;
+}
+
+.bg2{
+    left: 100%;
+    animation-name: moveBackground2;
+}
+
+@keyframes moveBackground{
+    from{
+        left: 0;
+    }
+    to{
+        left: -100%;
+    }
+}
+
+@keyframes moveBackground2{
+    from{
+        left: 100%;
+    }
+    to{
+        left: 0%;
+    }
+}
+
+.background{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: purple; /*#4EC0CA*/
+}
+
+#bird{
+    bottom: 48%;
+    left: 48%;  
+    position: absolute;
+    height: 35px;
+    width: 49px;
+    background: url(./Assets/bird.gif);
+    border: 1px solid red;
+    background-size: cover;
+    transition: all 0.25s;
+    transform: rotateZ(0deg);
+}
+
+.floatBird{
+    animation-name: floatingBird; /*название анимации*/
+    animation-duration: .6s; /*длительность анимации*/
+    animation-timing-function: linear; /*тип анимации*/
+    animation-iteration-count: infinite; /*количество повтора анимации*/
+    animation-direction: alternate; /*в какую сторону анимировать от 0 до 100 или наоборот, или от 0 до 100 и обратно*/
+    animation-play-state: running; /*анимация продолжается*/
+}
+
+@keyframes floatingBird{
+    from{
+        bottom: 50%;
+    }
+    to{
+        bottom: 47%;
+
+    }
+}
+
+.ground{
+    position: absolute;
+    left: -1%;
+    bottom: 0;
+    height: 170px;
+    width: 150%;
+    background-image: url(./Assets/ground.png);
+    background-position: bottom;
+    background-size: cover;
+    background-repeat: repeat-x;
+}
+
+.movingGround{
+    animation-name: moveGround;
+    animation-duration: .4s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-play-state: running;
+}
+
+@keyframes moveGround{
+    from{
+        left: -1%;
+    }
+    to{
+        left: -25%;
+    }
+}
