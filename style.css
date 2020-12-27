@@ -89,12 +89,12 @@ body{
     left: 48%;  
     position: absolute;
     height: 35px;
-    width: 49px;
+    width: 50px;
     background: url(./Assets/bird.gif);
     border: 1px solid red;
     background-size: cover;
     transition: all 0.25s;
-    transform: rotateZ(0deg);
+    
 }
 
 .floatBird{
@@ -143,5 +143,79 @@ body{
     }
     to{
         left: -25%;
+    }
+}
+
+.headstone{
+    position: absolute;
+    left: 44%;
+    bottom: 85px;
+    height: 80px;
+    width: 80px;
+    background-image: url(./Assets/headstone.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.headstoneMoveUp{
+    animation-name: growHeadStone;
+    animation-timing-function: cubic-bezier(0.620, 0.225, 0.125, 1.650);
+    animation-duration: 1.1s;
+    animation-delay: 0.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes growHeadStone{
+    0%{
+        bottom: 85px;
+    }
+    50%{
+        bottom: 158px;
+    }
+    100%{
+        bottom: 168px;
+    }
+}
+
+.upAngle{
+    animation-name: upBirdAngle;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-play-state: running;
+    animation-duration: 0.25s;
+}
+
+@keyframes upBirdAngle{
+    0%{
+        transform: rotateZ(0deg);
+    }
+    50%{
+        transform: rotateZ(-20deg);
+    }
+    100%{
+        transform: rotateZ(0deg);
+    }
+}
+
+.downAngle{
+    animation-name: downBirdAngle;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-duration: .4s;
+}
+
+@keyframes downBirdAngle{
+    0%{
+        transform: rotateZ(0deg);
+    }
+    100%{
+        transform: rotateZ(90deg);
     }
 }
