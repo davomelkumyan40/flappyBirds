@@ -3,11 +3,15 @@
     const bgImages = [...document.querySelectorAll(".bgImg")];
     const ground = document.querySelector(".ground");
     const headstone = document.querySelector(".headstone");
+    const debugOverlay = document.querySelector("#debugWindow");
+    let debugPropsElems = [...debugOverlay.querySelectorAll("p")];
+    let debugProps = {};
     let gameIsOver = false;
     let gameStarted = false;
     const screen = { height: 720, width: 480 };
     let threadId = 0;
     const groundHeight = 170;
+    let keyPressed = undefined;
 
 
     function Bird(){
@@ -30,32 +34,28 @@
         }
 
         this.fallDown = function(){
-            console.log(`Falling: ${this.y}`);
             let totalFallDistance = (this.fallDistance + this.inertia);
             if(totalFallDistance)
                 this.y -= totalFallDistance / 2;
         }
 
         this.flyUp = function(){
-            console.log(`Fly up: ${this.y}`);         
             this.y += 110;
         }
 
-        this.upAngle = function(){
-            this.angle = -15;
+        this.startFalling = function (){
+            this.isFalling = true;
+            this.fallDistance = 12;
         }
-
-        this.downAngle = function(){
-            this.angle = 90;
+    
+        this.stopFalling = function (){
+            this.fallDistance = 0;
+            this.isFalling = false;
         }
 
         this.isDead = function(){
             if(this.y <= groundHeight){
-                console.log("Game Over");
-                console.log(this.y + " : " + groundHeight);
                 this.y = groundHeight;
-                console.log("Y: " + this.y);
-                console.log("R: " + this.inertia);
                 this.y -= this.inertia + this.fallRatio;
                 this.fallRatio = 0;
                 if(this.y <= groundHeight - 43){
@@ -96,6 +96,11 @@
         birdElem.classList.add("floatBird");
     }
 
+    function debugModeToggle(){
+        birdElem.classList.toggle("debugMode");
+        debugOverlay.classList.toggle("debugOverlay");
+    }
+
     //TODO test remove in end
     document.querySelector(".window").addEventListener("click", () => {
         stopGame();
@@ -105,13 +110,33 @@
 
     function render(){
         birdElem.style.bottom = `${bird.y}px`;
+        debugPropsElems.forEach((e, i, a) => {
+            e.innerHTML = debugProps[i];
+        });
     }
+
+    setInterval(() => {
+        debugProps = [
+            `Y: ${bird.y.toFixed(3)}`,
+            `Bird height: ${(bird.y - groundHeight).toFixed(3)}`,
+            `Inertion value: ${bird.inertia}`,
+            `Ground heigh: ${groundHeight}`,
+            `Height: ${screen.height}px`,
+            `Width: ${screen.width}px`,
+            `Key pressed: ${keyPressed}`,
+            `Game is over: ${gameIsOver}`,
+            `Game is running: ${gameStarted}`
+        ];
+        render();
+    }, 10);
     
-    window.addEventListener("keyup", function(e) {
-        switch (e.key) {
+    window.addEventListener("keydown", function(e) {
+        keyPressed = e.key;
+        keyPressed = keyPressed.replace(" ", "Space");
+        switch (e.key.toLowerCase()) {
             case ' ':
                 if(!gameIsOver){
-                    stopFalling();
+                    bird.stopFalling();
                     birdElem.style.transition = "all 0.25s";
                     bird.flyUp();
                     birdElem.classList.remove("downAngle");
@@ -119,18 +144,19 @@
                     if(!gameStarted){
                         birdElem.classList.remove("floatBird");
                         threadId = setInterval(() => {
-                            if(!gameIsOver){
+                            if(!gameIsOver){   
                                 bird.calculatePhsycs();
                                 bird.fallDown();
-                                render();
                                 bird.fallDown();
                                 gameIsOver = bird.isDead();
-                                render();
                             } else stopGame();
                         }, 20);
                         gameStarted = true;
                     }
                 }
+                break;
+            case "f8":
+                debugModeToggle();
                 break;
         }
     });
@@ -138,19 +164,10 @@
     birdElem.addEventListener("transitionend", function(){
         this.style.transition = "all 0.1s";
         if(gameStarted){
-            startFalling();
+            bird.startFalling();
             birdElem.classList.remove("upAngle");
             birdElem.classList.add("downAngle");
         }
     });
 
-    function startFalling(){
-        bird.isFalling = true;
-        bird.fallDistance = 12;
-    }
-
-    function stopFalling(){
-        bird.fallDistance = 0;
-        bird.isFalling = false;
-    }
 })();
