@@ -31,9 +31,10 @@ body{
     left: 0;
     top: 0;
     font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    font-weight: 600;
     height: 40%;
-    width: 70%;
-    background-color: rgb(0, 0, 0, 0.2);
+    width: 50%;
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -47,7 +48,7 @@ body{
 }
 
 .dContainer p{
-    margin: 5px;
+    margin: 4px;
 }
 
 .bgImg{
@@ -110,13 +111,61 @@ body{
 
 #bird{
     bottom: 48%;
-    left: 48%;  
+    left: 25%;  
     position: absolute;
     height: 35px;
     width: 50px;
     background: url(./Assets/bird.gif);
     background-size: cover;
     transition: all 0.25s;
+}
+
+.pipes{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.pair{
+    position: absolute;
+    bottom: 85px; /*center*/
+    height: 100%;
+    width: 65px;
+    right: -65px; /*right border*/
+    animation-name: movePipe;
+    animation-timing-function: linear;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+.pipe{
+    position: absolute;
+    height: 260px;
+    width: 100%;
+    background-image: url(./Assets/day_pipe.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.pipeup{
+    top: 0;
+    transform: rotate(180deg);
+}
+
+.pipedown{
+    bottom: 0;
+}
+
+@keyframes movePipe{
+    from{
+        right: -65px;
+    }
+    to{
+        right: 525px;
+    }
 }
 
 .debugMode{
@@ -138,43 +187,64 @@ body{
     }
     to{
         bottom: 47%;
-
     }
 }
 
 .ground{
     position: absolute;
-    left: -1%;
+    left: 0;
     bottom: 0;
     height: 170px;
-    width: 150%;
+    width: 590px;
     background-image: url(./Assets/ground.png);
     background-position: bottom;
     background-size: cover;
-    background-repeat: repeat-x;
+    background-repeat: no-repeat;
 }
 
 .movingGround{
-    animation-name: moveGround;
-    animation-duration: .4s;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
     animation-direction: normal;
     animation-play-state: running;
 }
 
+.groundPauseAnim{
+    animation-play-state: paused;
+}
+
+.g1{
+    animation-name: moveGround;
+}
+
+.g2{
+    animation-name: moveGround2;
+}
+
 @keyframes moveGround{
     from{
-        left: -1%;
+        left: 0;
     }
     to{
-        left: -25%;
+        left: -590px;
+    }
+}
+
+@keyframes moveGround2{
+    from{
+        left: 590px;
+    }
+    to{
+        left: 0;
     }
 }
 
 .headstone{
     position: absolute;
-    left: 44%;
+    left: 20%;
     bottom: 85px;
     height: 80px;
     width: 80px;
@@ -204,6 +274,10 @@ body{
     100%{
         bottom: 168px;
     }
+}
+
+.upNose{
+    transform: rotateZ(-25deg);
 }
 
 .upAngle{

@@ -1,17 +1,25 @@
 (function() {
     const birdElem = document.querySelector("#bird");
     const bgImages = [...document.querySelectorAll(".bgImg")];
-    const ground = document.querySelector(".ground");
+    const grounds = [...document.querySelectorAll(".ground")];
     const headstone = document.querySelector(".headstone");
-    const debugOverlay = document.querySelector("#debugWindow");
-    let debugPropsElems = [...debugOverlay.querySelectorAll("p")];
-    let debugProps = {};
+    const debugOverlay = document.querySelector(".dContainer");
+    const pipePairs = [...document.querySelectorAll(".pair")];
+    const debugWindow = document.querySelector("#debugWindow");
+    const groundHeight = 170;
+    const screen = { height: 720, width: 480 };
+    let debugProps = [];
     let gameIsOver = false;
     let gameStarted = false;
-    const screen = { height: 720, width: 480 };
     let threadId = 0;
-    const groundHeight = 170;
     let keyPressed = undefined;
+    let score = 0;
+    let coins = 0;
+    let pipeY = 85;
+    let isDebugMode = false;
+    const rand = function(min, max){
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
 
 
     function Bird(){
@@ -21,6 +29,7 @@
         this.fallRatio = -9;
         this.fallDistance = 13;
         this.isFalling = false;
+        this.speed = 2;
 
         this.bind = function(screenObj){
             this.y = screenObj.height * 48 / 100;
@@ -58,7 +67,7 @@
                 this.y = groundHeight;
                 this.y -= this.inertia + this.fallRatio;
                 this.fallRatio = 0;
-                if(this.y <= groundHeight - 43){
+                if(this.y <= groundHeight - 20){
                     headstone.classList.add("headstoneMoveUp");
                 }
                 return true;
@@ -73,17 +82,20 @@
     function stopGame(){
         clearInterval(threadId);
         gameStarted = false;
+        // birdElem.classList.add("upAngle");
         bgImages.forEach((e) => {
             e.classList.add("bgPauseAnim");
         });
-        ground.classList.remove("movingGround");
+        grounds.forEach((e) => {
+            e.classList.add("groundPauseAnim");
+        });
         birdElem.classList.remove("floatBird");
         birdElem.style.backgroundImage = "url('./Assets/bird_noanim.png')";
     }
 
     function resetGame(){
         headstone.classList.remove("headstoneMoveUp");
-        birdElem.classList.remove("upAngle");
+        // birdElem.classList.remove("upAngle");
         birdElem.classList.remove("downAngle");
         birdElem.style.backgroundImage = "url('./Assets/bird.gif')";
         bird = new Bird();
@@ -92,13 +104,19 @@
         bgImages.forEach((e) => {
             e.classList.remove("bgPauseAnim");
         });
-        ground.classList.add("movingGround");
+        grounds.forEach((e) => {
+            e.classList.remove("groundPauseAnim");
+        });
         birdElem.classList.add("floatBird");
     }
 
     function debugModeToggle(){
+        isDebugMode = !isDebugMode;
         birdElem.classList.toggle("debugMode");
-        debugOverlay.classList.toggle("debugOverlay");
+        debugWindow.classList.toggle("debugOverlay");
+        pipePairs.forEach((e, i, a) => {
+            e.childNodes.forEach((e, i, a) => e.classList && e.classList.toggle("debugMode"));
+        });
     }
 
     //TODO test remove in end
@@ -110,26 +128,38 @@
 
     function render(){
         birdElem.style.bottom = `${bird.y}px`;
-        debugPropsElems.forEach((e, i, a) => {
-            e.innerHTML = debugProps[i];
-        });
+        if(isDebugMode){
+            debugOverlay.innerHTML = ""; 
+            for(let i = 0; i < debugProps.length; i++){
+                let p = document.createElement("p");
+                let tn = document.createTextNode(debugProps[i]);
+                p.appendChild(tn);
+                debugOverlay.appendChild(p);
+            }
+        }
     }
 
     setInterval(() => {
-        debugProps = [
-            `Y: ${bird.y.toFixed(3)}`,
-            `Bird height: ${(bird.y - groundHeight).toFixed(3)}`,
-            `Inertion value: ${bird.inertia}`,
-            `Ground heigh: ${groundHeight}`,
-            `Height: ${screen.height}px`,
-            `Width: ${screen.width}px`,
-            `Key pressed: ${keyPressed}`,
-            `Game is over: ${gameIsOver}`,
-            `Game is running: ${gameStarted}`
-        ];
+        if(isDebugMode){
+            debugProps = [
+                `Y: ${bird.y.toFixed(3)}`,
+                `Pipe Pair Y: ${pipeY}`,
+                `Bird height: ${(bird.y - groundHeight).toFixed(3)}`,
+                `Inertion value: ${bird.inertia}`,
+                `Ground heigh: ${groundHeight}`,
+                `Height: ${screen.height}px`,
+                `Width: ${screen.width}px`,
+                `Key pressed: ${keyPressed}`,
+                `Game is over: ${gameIsOver}`,
+                `Speed value : ${bird.speed}`,
+                `Score: ${score}`, /*TODO*/
+                `Coins: ${coins}` /*TODO*/
+            ];
+        }
         render();
     }, 10);
     
+    //TODO upNose finish
     window.addEventListener("keydown", function(e) {
         keyPressed = e.key;
         keyPressed = keyPressed.replace(" ", "Space");
@@ -138,9 +168,10 @@
                 if(!gameIsOver){
                     bird.stopFalling();
                     birdElem.style.transition = "all 0.25s";
-                    bird.flyUp();
-                    birdElem.classList.remove("downAngle");
+                    // birdElem.classList.add("upNose");
                     birdElem.classList.add("upAngle");
+                    birdElem.classList.remove("downAngle");
+                    bird.flyUp();
                     if(!gameStarted){
                         birdElem.classList.remove("floatBird");
                         threadId = setInterval(() => {
@@ -165,9 +196,15 @@
         this.style.transition = "all 0.1s";
         if(gameStarted){
             bird.startFalling();
+            // birdElem.classList.remove("upNose");
             birdElem.classList.remove("upAngle");
             birdElem.classList.add("downAngle");
         }
     });
+
+
+    setTimeout(() => {
+
+    }, 5);
 
 })();
